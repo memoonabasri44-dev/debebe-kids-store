@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>debebe — Kids Fashion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8F1; --cream-2:#FCEFE4;
+    --rose:#D98B96; --rose-dark:#B9636F; --rose-light:#F6DCDF;
+    --mint:#8FB89B; --mint-light:#DCEBE0;
+    --sky:#7FA8C9; --sky-light:#DCE8F2;
+    --gold:#E0A94F; --gold-light:#F5E3C8;
+    --ink:#33291F; --ink-soft:#6B5D50; --line:#EDE1D3;
+    --radius:16px; --shadow:0 10px 30px -14px rgba(51,41,31,.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4,.display{font-family:'Fraunces',serif;font-weight:600;margin:0;line-height:1.08;}
+  a{color:inherit;text-decoration:none;cursor:pointer;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  img{display:block;max-width:100%;width:100%;height:100%;object-fit:cover;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:999px;font-weight:800;font-size:14px;transition:.15s;}
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-primary:hover{background:var(--rose-dark);transform:translateY(-2px);}
+  .btn-outline{background:transparent;color:var(--ink);border:2px solid var(--ink);}
+  .btn-outline:hover{background:var(--ink);color:#fff;}
+  .btn-mint{background:var(--mint);color:#fff;}
+  .btn-mint:hover{background:#729d80;}
+  .btn-sm{padding:9px 16px;font-size:12.5px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .eyebrow{font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--rose-dark);font-size:12px;margin-bottom:8px;display:block;}
+
+  /* ---- Header ---- */
+  header{position:sticky;top:0;z-index:60;background:rgba(255,248,241,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1200px;margin:0 auto;gap:20px;}
+  .logo{font-family:'Fraunces',serif;font-size:27px;font-weight:700;color:var(--rose-dark);letter-spacing:-.5px;}
+  .logo span{color:var(--mint);}
+  nav.main-nav{display:flex;gap:22px;align-items:center;}
+  .nav-item{position:relative;}
+  .nav-item>a{font-weight:800;font-size:13.5px;color:var(--ink);position:relative;padding:10px 0;display:inline-block;}
+  .nav-item.active>a,.nav-item>a:hover{color:var(--rose-dark);}
+  .nav-item.active>a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:2.5px;background:var(--rose);border-radius:3px;}
+  .mega{
+    position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    background:#fff;border-radius:14px;box-shadow:var(--shadow);border:1px solid var(--line);
+    padding:22px;display:none;gap:34px;min-width:520px;z-index:70;
+  }
+  .nav-item:hover .mega{display:flex;}
+  .mega-col h6{font-family:'Fraunces',serif;font-size:13px;color:var(--rose-dark);margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em;}
+  .mega-col a{display:block;font-size:13.5px;padding:6px 0;color:var(--ink-soft);font-weight:600;}
+  .mega-col a:hover{color:var(--rose-dark);}
+  .header-actions{display:flex;align-items:center;gap:14px;}
+  .icon-btn{position:relative;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--cream-2);transition:.15s;font-size:17px;}
+  .icon-btn:hover{background:var(--rose-light);}
+  .cart-badge{position:absolute;top:-3px;right:-3px;background:var(--rose-dark);color:#fff;font-size:10.5px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+  .hamburger{display:none;width:40px;height:40px;border-radius:50%;background:var(--cream-2);align-items:center;justify-content:center;font-size:18px;}
+  .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 24px 18px;border-top:1px solid var(--line);max-height:70vh;overflow:auto;}
+  .mobile-nav a{padding:12px 4px;font-weight:800;border-bottom:1px solid var(--line);font-size:14px;}
+  @media(max-width:980px){nav.main-nav{display:none;} .hamburger{display:flex;} .mobile-nav.open{display:flex;}}
+
+  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 24px;border-radius:999px;font-weight:700;font-size:13.5px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:all .3s;z-index:200;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ---- Hero ---- */
+  .hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:60px 24px;max-width:1200px;margin:0 auto;}
+  .hero .eyebrow{font-size:13px;}
+  .hero h1{font-size:52px;color:var(--ink);}
+  .hero h1 em{font-style:italic;color:var(--rose-dark);}
+  .hero p{color:var(--ink-soft);font-size:16.5px;margin:18px 0 26px;max-width:420px;}
+  .hero-art{aspect-ratio:1/1;border-radius:28px;overflow:hidden;box-shadow:var(--shadow);}
+  @media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:30px;} .hero h1{font-size:36px;}}
+
+  section.block{padding:52px 0;}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
+  .section-head h2{font-size:32px;}
+
+  /* ---- Category tiles ---- */
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .cat-tile{border-radius:var(--radius);overflow:hidden;position:relative;aspect-ratio:3/4;box-shadow:var(--shadow);transition:transform .2s;}
+  .cat-tile:hover{transform:translateY(-6px);}
+  .cat-tile img{position:absolute;inset:0;}
+  .cat-tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.6));}
+  .cat-tile .tag{position:absolute;left:16px;bottom:16px;color:#fff;font-weight:800;font-family:'Fraunces',serif;font-size:17px;z-index:2;}
+  @media(max-width:800px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---- Tabs ---- */
+  .tabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
+  .tab-btn{padding:9px 20px;border-radius:999px;font-weight:800;font-size:13.5px;background:var(--cream-2);color:var(--ink-soft);}
+  .tab-btn.active{background:var(--ink);color:#fff;}
+
+  /* ---- Product grid & card ---- */
+  .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media(max-width:900px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
+  .card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .18s;}
+  .card:hover{transform:translateY(-5px);}
+  .card-img{aspect-ratio:1/1.2;position:relative;background:var(--cream-2);overflow:hidden;}
+  .badge{position:absolute;top:10px;left:10px;background:var(--rose-dark);color:#fff;font-size:10.5px;font-weight:800;padding:5px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.03em;z-index:2;}
+  .card-body{padding:14px 15px 16px;display:flex;flex-direction:column;gap:7px;flex:1;}
+  .card-body h4{font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--ink);}
+  .price-row{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--rose-dark);font-size:14px;}
+  .price-row .old{color:#B7A99A;font-weight:600;text-decoration:line-through;font-size:12.5px;}
+  .card-body .btn{margin-top:auto;width:100%;}
+
+  /* ---- Collections banners ---- */
+  .collections{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .collection-card{border-radius:var(--radius);overflow:hidden;position:relative;aspect-ratio:16/10;display:flex;flex-direction:column;justify-content:flex-end;padding:26px;color:#fff;}
+  .collection-card img{position:absolute;inset:0;}
+  .collection-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,.6));}
+  .collection-card h3,.collection-card span{position:relative;color:#fff;z-index:2;}
+  .collection-card h3{font-size:24px;margin-bottom:10px;}
+  @media(max-width:800px){.collections{grid-template-columns:1fr;}}
+
+  .banner-wide{border-radius:24px;overflow:hidden;position:relative;aspect-ratio:21/8;display:flex;align-items:center;padding:0 50px;color:#fff;}
+  .banner-wide img{position:absolute;inset:0;}
+  .banner-wide::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55),transparent 60%);}
+  .banner-wide .content{position:relative;z-index:2;max-width:360px;}
+  .banner-wide h3{color:#fff;font-size:28px;margin-bottom:14px;}
+  @media(max-width:800px){.banner-wide{aspect-ratio:4/5;padding:0 26px;}}
+
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;text-align:center;}
+  .feature{padding:26px 16px;}
+  .feature .fic{font-size:36px;margin-bottom:12px;}
+  .feature h4{font-family:'Fraunces',serif;font-size:17px;margin-bottom:8px;}
+  .feature p{color:var(--ink-soft);font-size:13.5px;margin:0;}
+  @media(max-width:800px){.features{grid-template-columns:1fr;}}
+
+  .organic{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;background:var(--mint-light);border-radius:26px;padding:46px;}
+  .organic .art{aspect-ratio:1;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);}
+  .organic p{color:var(--ink-soft);margin:16px 0 22px;line-height:1.75;}
+  @media(max-width:800px){.organic{grid-template-columns:1fr;padding:28px;}}
+
+  .shipstrip{display:flex;justify-content:center;gap:60px;padding:34px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .shipstrip div{text-align:center;font-size:13.5px;color:var(--ink-soft);font-weight:700;}
+  .shipstrip div b{display:block;font-family:'Fraunces',serif;font-size:16px;color:var(--ink);margin-bottom:4px;font-weight:600;}
+
+  footer{background:var(--ink);color:#EFE6DA;margin-top:10px;padding:44px 0 24px;}
+  .foot-top{display:grid;grid-template-columns:1fr 2fr;gap:30px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:36px;align-items:start;}
+  .foot-newsletter h5{margin-bottom:8px;}
+  .foot-help{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .foot-help>div{display:flex;gap:10px;align-items:flex-start;}
+  .foot-help .fh-ic{font-size:18px;flex-shrink:0;}
+  .foot-help b{display:block;color:#fff;font-size:13px;margin-bottom:3px;}
+  .foot-help p{margin:0;font-size:12.5px;color:#C9BEAF;}
+  .foot-help p a{color:#C9BEAF;}
+  .foot-help p a:hover{color:#fff;}
+  .social-row{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap;}
+  .social-row a{font-size:12.5px;font-weight:700;color:#C9BEAF;}
+  .social-row a:hover{color:#fff;}
+  @media(max-width:900px){.foot-top{grid-template-columns:1fr;} .foot-help{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){.foot-help{grid-template-columns:1fr;}}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px;}
+  footer h5{font-family:'Fraunces',serif;font-size:14px;margin-bottom:15px;color:#fff;font-weight:600;}
+  footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+  footer a{color:#C9BEAF;font-size:13.5px;}
+  footer a:hover{color:#fff;}
+  footer .logo{color:#fff;}
+  footer .logo span{color:var(--mint);}
+  footer p.tag{color:#C9BEAF;font-size:13.5px;margin:14px 0 10px;max-width:260px;}
+  .newsletter-row{display:flex;gap:8px;margin-top:8px;}
+  .newsletter-row input{flex:1;padding:10px 12px;border-radius:8px;border:none;font-size:13px;}
+  .newsletter-row button{background:var(--rose);color:#fff;padding:10px 16px;border-radius:8px;font-weight:800;font-size:13px;}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:40px;padding-top:20px;display:flex;justify-content:space-between;color:#9a8f80;font-size:12.5px;flex-wrap:wrap;gap:10px;}
+  @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+  @media(max-width:600px){.footer-grid{grid-template-columns:1fr 1fr;}}
+
+  .page-head{padding:40px 0 8px;}
+  .page-head h1{font-size:36px;}
+  .page-head p{color:var(--ink-soft);margin-top:8px;}
+  .breadcrumb{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;}
+  .breadcrumb a:hover{color:var(--rose-dark);}
+
+  .product-detail{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:36px 0 70px;}
+  .pd-img{aspect-ratio:1;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);position:relative;}
+  .pd-info h1{font-size:30px;margin-bottom:10px;}
+  .pd-price{font-size:22px;font-weight:800;color:var(--rose-dark);margin-bottom:16px;font-family:'Nunito',sans-serif;}
+  .pd-info p.desc{color:var(--ink-soft);line-height:1.7;margin-bottom:22px;}
+  .swatch-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px;}
+  .swatch{padding:8px 15px;border-radius:9px;border:2px solid var(--line);font-weight:700;font-size:13px;color:var(--ink);}
+  .swatch.selected{border-color:var(--rose-dark);background:var(--rose-light);color:var(--rose-dark);}
+  .qty-row{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+  .qty-box{display:flex;align-items:center;border:2px solid var(--line);border-radius:10px;overflow:hidden;}
+  .qty-box button{width:36px;height:36px;font-size:17px;font-weight:800;}
+  .qty-box span{width:36px;text-align:center;font-weight:700;}
+  .pd-actions{display:flex;gap:12px;}
+  .info-note{margin-top:24px;font-size:12.5px;color:var(--ink-soft);display:flex;flex-direction:column;gap:6px;}
+  @media(max-width:800px){.product-detail{grid-template-columns:1fr;}}
+
+  .cart-layout{display:grid;grid-template-columns:1.7fr 1fr;gap:36px;padding:36px 0 80px;align-items:start;}
+  .cart-item{display:grid;grid-template-columns:64px 1fr auto auto;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);}
+  .cart-item .ci-img{width:64px;height:64px;border-radius:12px;overflow:hidden;background:var(--cream-2);flex-shrink:0;}
+  .cart-item h4{font-size:14px;margin-bottom:4px;}
+  .cart-item .meta{font-size:11.5px;color:var(--ink-soft);}
+  .cart-item .remove{font-size:11.5px;color:var(--rose-dark);font-weight:700;margin-top:5px;}
+  .summary-card{background:#fff;border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+  .summary-row{display:flex;justify-content:space-between;padding:7px 0;font-size:13.5px;color:var(--ink-soft);}
+  .summary-row.total{font-size:17px;font-weight:800;color:var(--ink);border-top:1px solid var(--line);margin-top:8px;padding-top:14px;}
+  .empty-state{text-align:center;padding:70px 20px;}
+  .empty-state .em{font-size:58px;margin-bottom:14px;}
+  @media(max-width:800px){
+    .cart-layout{grid-template-columns:1fr;gap:24px;padding:26px 0 60px;}
+    .cart-item{grid-template-columns:52px 1fr auto;grid-template-areas:"img name name" "img qty price";column-gap:12px;row-gap:10px;}
+    .cart-item .ci-img{grid-area:img;width:52px;height:52px;}
+    .cart-item>div:nth-child(2){grid-area:name;}
+    .cart-item .qty-box{grid-area:qty;}
+    .cart-item>div:last-child{grid-area:price;align-self:center;justify-self:end;}
+  }
+  @media(max-width:420px){.cart-item{grid-template-columns:44px 1fr auto;}}
+
+  .checkout-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:36px;padding:36px 0 80px;align-items:start;}
+  .form-card{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+  .form-card h3{font-size:18px;margin-bottom:18px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .form-row.full{grid-template-columns:1fr;}
+  .field label{display:block;font-size:12.5px;font-weight:800;margin-bottom:6px;color:var(--ink-soft);}
+  .field input,.field select{width:100%;padding:11px 13px;border:2px solid var(--line);border-radius:9px;font-family:inherit;font-size:13.5px;background:var(--cream);color:var(--ink);}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--rose);}
+  .field.err input{border-color:#C0392B;}
+  .err-msg{color:#C0392B;font-size:11.5px;margin-top:5px;display:none;}
+  .field.err .err-msg{display:block;}
+  .mini-item{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;color:var(--ink-soft);}
+  @media(max-width:800px){.checkout-layout{grid-template-columns:1fr;} .form-row{grid-template-columns:1fr;}}
+
+  .success{text-align:center;padding:90px 20px;max-width:500px;margin:0 auto;}
+  .success .ic{font-size:70px;margin-bottom:18px;}
+  .order-box{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin:24px 0;text-align:left;}
+  .order-box .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13.5px;}
+
+  .info-page{padding:46px 0 90px;max-width:740px;margin:0 auto;}
+  .info-page h1{font-size:32px;margin-bottom:16px;}
+  .info-page p{color:var(--ink-soft);line-height:1.8;margin-bottom:14px;}
+  .info-page .box{background:#fff;border-radius:16px;padding:22px;box-shadow:var(--shadow);margin-bottom:14px;}
+  .chip-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .chip{padding:9px 16px;border-radius:999px;background:var(--cream-2);font-weight:700;font-size:12.5px;color:var(--ink-soft);}
+  .brand-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
+  .brand-tile{background:#fff;border-radius:14px;padding:26px 14px;text-align:center;box-shadow:var(--shadow);font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#/" class="logo"><img src="https://debebe.vamtam.com/wp-content/uploads/2022/03/Logo-1.svg" alt="debebe" style="height:34px;width:auto;"></a>
+    <nav class="main-nav" id="mainNav"></nav>
+    <div class="header-actions">
+      <button class="icon-btn" title="Wishlist" onclick="app.toast('Saved to your favorites 💕')">♡</button>
+      <a class="icon-btn" href="#/cart" title="Cart">🛍️<span class="cart-badge" id="cartBadge">0</span></a>
+      <button class="hamburger" id="hamburgerBtn" onclick="app.toggleMobileNav()">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav"></div>
+</header>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-newsletter">
+        <h5>Newsletter</h5>
+        <p class="tag">Subscribe to receive updates, access to exclusive deals, and more.</p>
+        <div class="newsletter-row">
+          <input type="email" id="nlEmail" placeholder="Your email">
+          <button onclick="app.subscribe()">Submit</button>
+        </div>
+      </div>
+      <div class="foot-help">
+        <div><span class="fh-ic">✉️</span><div><b>Happy to help you</b><p>Any question? We are happy to help you by e-mail.</p></div></div>
+        <div><span class="fh-ic">❓</span><div><b>Got a question?</b><p><a href="#/faq">Read our FAQ</a></p></div></div>
+        <div><span class="fh-ic">📞</span><div><b>Customer support</b><p><a href="tel:7086385584">(708) 638-5584</a></p></div></div>
+        <div><span class="fh-ic">📍</span><div><b>Looking for our products?</b><p><a href="#/find-a-retailer">Find a retailer</a></p></div></div>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <div>
+        <a href="#/" class="logo">de<span>bebe</span></a>
+        <p class="tag">GOTS-certified organic cotton, wash-tested to last. Made by a team that's 95% women and 80% moms.</p>
+        <div class="social-row">
+          <a href="https://facebook.com" target="_blank" rel="noopener">Facebook</a>
+          <a href="https://www.instagram.com/debebevamtam/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://twitter.com" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://pinterest.com" target="_blank" rel="noopener">Pinterest</a>
+        </div>
+      </div>
+      <div><h5>Shop</h5><ul>
+        <li><a href="#/category/baby">Baby</a></li>
+        <li><a href="#/category/girls">Girls</a></li>
+        <li><a href="#/category/boys">Boys</a></li>
+      </ul></div>
+      <div><h5>Company</h5><ul>
+        <li><a href="#/our-difference">Our Difference</a></li>
+        <li><a href="#/services">Our Services</a></li>
+        <li><a href="#/blog">Our Blog</a></li>
+        <li><a href="#/contact">Contact</a></li>
+      </ul></div>
+      <div><h5>Support</h5><ul>
+        <li><a href="#/size-charts">Size Charts</a></li>
+        <li><a href="#/look-books">Look Books</a></li>
+        <li><a href="https://www.trustpilot.com/review/babyepoch.com" target="_blank" rel="noopener">Customer Reviews</a></li>
+        <li><a href="#/faq">FAQ</a></li>
+      </ul></div>
+      <div><h5>Orders</h5><ul>
+        <li><a href="#/track-order">Track Order</a></li>
+        <li><a href="#/returns">Returns &amp; Cancellations</a></li>
+        <li><a href="#/terms">Terms &amp; Conditions</a></li>
+        <li><a href="#/privacy">Privacy Policy</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 debebe. All rights reserved.</span>
+      <span>(708) 638-5584</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ============ IMAGE HELPER ============ */
+const IMG = (name) => `https://debebe.vamtam.com/wp-content/uploads/2022/06/${name}`;
+
+/* ============ DATA ============ */
+const PRODUCTS = [
+  {id:1,name:"Ribbed Jogging Set",price:14.99,img:IMG("4012511514_6_1_1-420x525.jpg"),cats:["baby","boys","babyBoy"],sizes:["NB","0-3M","3-6M","6-9M"],desc:"Soft ribbed knit jogging set made from GOTS-certified organic cotton. Perfect for everyday comfort and easy movement."},
+  {id:2,name:"Purl Knit Dungarees",price:7.99,img:"https://debebe.vamtam.com/wp-content/uploads/2022/03/2582539703_6_1_1-420x525.jpg",cats:["baby","babyGirl","babyBoy"],sizes:["NB","0-3M","3-6M"],desc:"Classic purl-knit dungarees with adjustable straps, ideal for a growing baby.",tag:"Sale"},
+  {id:3,name:"2-piece Set Light Pink",price:24.99,img:IMG("1-2-420x525.webp"),cats:["baby","girls","babyGirl"],sizes:["0-3M","3-6M","6-9M","9-12M"],desc:"A cozy two-piece set in blush pink, wash-tested to never shrink, pill, or fade."},
+  {id:4,name:"Striped Sweatshirt",price:15.99,oldPrice:25.00,img:IMG("5643519108_6_1_1-420x525.jpeg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M","9-12M"],desc:"Breton-stripe sweatshirt in brushed cotton fleece — on sale this week only.",tag:"Sale"},
+  {id:5,name:"Long Printed Bermuda Shorts",price:12.99,img:IMG("0371503658_6_1_1-420x525.jpg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["3-6M","6-9M","9-12M"],desc:"Lightweight printed bermuda shorts, ideal for warm days out."},
+  {id:6,name:"Cotton Pajamas, 3 Pieces",price:9.99,img:IMG("hmgoepprod-420x525.jpg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["NB","0-3M","3-6M"],desc:"Three-piece pajama set in 100% organic cotton for sound, safe sleep."},
+  {id:7,name:"Animal Leggings",price:9.99,img:IMG("5350575712_6_2_1-420x525.jpg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M"],desc:"Playful animal-print leggings in stretchy, breathable cotton."},
+  {id:8,name:"2-piece Set",price:19.99,img:IMG("1-420x525.webp"),cats:["baby","girls","babyGirl"],sizes:["0-3M","3-6M","6-9M"],desc:"An easy-to-layer two-piece set for effortless everyday dressing."},
+  {id:9,name:"Hoodie with Surf Logo",price:15.99,img:IMG("2888664403_6_1_1-scaled-420x525.jpeg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["3-6M","6-9M","9-12M"],desc:"Relaxed-fit hoodie with a printed surf logo, brushed fleece lining."},
+  {id:10,name:"Ruffle-trimmed Bomber Jacket",price:16.99,img:IMG("1-1-420x525.webp"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M"],desc:"Lightweight bomber jacket with ribbed cuffs, finished with a ruffle trim."},
+  {id:11,name:"Vibes T-shirt",price:8.99,img:IMG("5643702612_6_1_1-scaled-420x525.jpeg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M"],desc:"Graphic tee in soft cotton jersey, pre-shrunk for a lasting fit.",tag:"New"},
+  {id:12,name:"Giraffe Romper Suit",price:15.99,img:IMG("5767575052_6_1_1-420x525.jpg"),cats:["baby","girls","boys","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M"],desc:"Playful giraffe-print romper in soft organic cotton with snap closures."},
+  {id:13,name:"3-Pack Top Bundle",price:30.00,img:"https://debebe.vamtam.com/wp-content/uploads/2022/06/hellobabytop_bundle-2-f8-newsolidgrey_1024x1024-420x525.webp",cats:["baby","babyGirl","babyBoy"],sizes:["0-3M","3-6M","6-9M"],desc:"Three essential tops in a bundle, mix-and-match ready."},
+  {id:14,name:"Set of 2 Baby Blankets, Cotton",price:15.99,img:IMG("hmgoepprod-4-420x525.jpeg"),cats:["baby","babyGirl","babyBoy"],sizes:["One Size"],desc:"Two soft cotton blankets, perfect for stroller or crib."},
+  {id:15,name:"Set of 3 Muslin Baby Blankets",price:19.99,img:IMG("hmgoepprod-1-1-420x525.jpeg"),cats:["baby","babyGirl","babyBoy"],sizes:["One Size"],desc:"Breathable muslin blankets, three per set, great for swaddling."},
+  {id:16,name:"Baby Blankets, Muslin, 2 pcs.",price:14.99,img:IMG("hmgoepprod-5-420x525.jpeg"),cats:["baby","babyGirl","babyBoy"],sizes:["One Size"],desc:"Lightweight muslin blankets, two per set."},
+  {id:17,name:"Baby Blankets, Muslin, 2 pcs. (II)",price:14.99,img:IMG("hmgoepprod-1-2-420x525.jpeg"),cats:["baby","babyGirl","babyBoy"],sizes:["One Size"],desc:"Lightweight muslin blankets in an alternate print, two per set."},
+  {id:18,name:"Soft Toy",price:34.99,img:IMG("hmgoepprod-6-420x525.jpeg"),cats:["baby","toys","babyGirl","babyBoy"],sizes:["One Size"],desc:"A cuddly plush companion, hand-finished and safety-tested."},
+  {id:19,name:"Leather Sandals",price:59.95,img:"https://debebe.vamtam.com/wp-content/uploads/2022/06/4605930100_6_1_1-scaled-420x525.jpeg",cats:["girls","footwear"],sizes:["24","25","26","27","28"],desc:"Genuine leather sandals with an adjustable buckle strap, built for little feet on the move."},
+  {id:20,name:"Sld 8 Srpls",price:31.00,img:"https://debebe.vamtam.com/wp-content/uploads/2022/06/2561930030_6_1_1-scaled-420x525.jpeg",cats:["girls","footwear"],sizes:["24","26","28","30"],desc:"Everyday casual shoes with a flexible, cushioned sole."},
+  {id:21,name:"Sock-style Sneakers",price:28.00,oldPrice:38.00,img:IMG("2313930030_6_1_1-420x525.jpeg"),cats:["girls","footwear"],sizes:["24","26","28","30"],desc:"Slip-on sock-style sneakers with a flexible sole for all-day play.",tag:"Sale"},
+  {id:22,name:"2-piece Set Light Green",price:24.99,img:IMG("1-3-420x525.webp"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"A cozy two-piece set in soft sage green."},
+  {id:23,name:"Leopard T-Shirt",price:4.99,img:IMG("5767554052_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y","5Y"],desc:"Playful leopard-print tee in soft jersey cotton.",tag:"New"},
+  {id:24,name:"Pouch Pocket Set",price:12.99,img:IMG("7947502400_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"Two-piece set with a fun front pouch pocket."},
+  {id:25,name:"Quilted Jacket",price:15.99,oldPrice:30.00,img:IMG("5644518505_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y","5Y"],desc:"Lightweight quilted jacket with a soft, water-resistant shell.",tag:"Sale"},
+  {id:26,name:"Giraffe Slub Knit Trousers",price:11.99,img:IMG("4805587982_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"Slub-knit trousers with an easy elastic waistband."},
+  {id:27,name:"Dungarees with Pocket",price:16.99,img:IMG("5052512052_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"Classic dungarees with a front pocket, in durable stretch denim."},
+  {id:28,name:"Crossover Knit Three",price:18.99,img:IMG("7947504812_6_1_1-420x525.jpg"),cats:["boys"],sizes:["3Y","4Y","5Y"],desc:"Three-piece crossover knit set, easy to mix and match."},
+  {id:29,name:"Bird Soft Toy",price:9.99,img:IMG("hmgoepprod-1-5-420x525.jpeg"),cats:["boys","toys"],sizes:["One Size"],desc:"Cuddly stuffed bird toy with hand-stitched details, safe for newborns."},
+  {id:30,name:"Giraffe Slub Knit T-Shirt",price:16.99,img:IMG("4805586982_6_1_1-420x525.jpg"),cats:["boys"],sizes:["2Y","3Y","4Y"],desc:"Slub-knit tee with a giraffe graphic — breathable and soft."},
+  {id:31,name:"Sheep Knit Sweater",price:12.99,img:IMG("2582516812_6_1_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"Cozy knit sweater with a sheep motif, soft against sensitive skin.",tag:"New"},
+  {id:32,name:"Palm Tree Set",price:12.99,img:IMG("6224845703_6_2_1-420x525.jpg"),cats:["girls","boys"],sizes:["2Y","3Y","4Y"],desc:"Breezy palm-print set for warm-weather adventures.",tag:"New"},
+];
+
+const CAT_LABELS = {baby:"Baby",girls:"Girls",boys:"Boys",footwear:"Footwear",toys:"Toys",babyGirl:"Baby Girl",babyBoy:"Baby Boy"};
+
+const COLLECTIONS = ["Spring Bloom","Mix & Match Magic","Cute & Comfy","Better Together"];
+const MEGA = {
+  baby: {
+    "Baby Clothing":["Shop All Baby Clothing","One Pieces, Rompers + Bodysuits","Shirts + Tops","Pants + Leggings","Sweaters + Sweatshirts","Jackets + Outerwear","Swimsuits","Pajamas"],
+    "Baby Collections":COLLECTIONS,
+    "Shop by Size":["Newborn","0–3M","3–6M","6–9M","9–12M","12–18M","18–24M"],
+  },
+  girls: {
+    "Girls Clothing":["Shop All Girls Clothing","Coats and Jackets","Dresses, Skirts","T-shirts","Sweatshirts, Sweaters","Trousers, Jeans, Leggings","Sets","Shoes"],
+    "Girls Collections":COLLECTIONS,
+    "Shop by Size":["2–8 Y","9–14 Y"],
+  },
+  boys: {
+    "Boys Clothing":["Shop All Boys Clothing","Coats and Jackets","Sweatshirts","Trousers","T-shirts","Jeans","Sweaters, Jackets","Shirts"],
+    "Boys Collections":COLLECTIONS,
+    "Shop by Size":["2–8 Y","9–14 Y"],
+  },
+};
+
+/* ============ STATE ============ */
+const state = { cart: [], mobileOpen:false };
+
+/* ============ APP ============ */
+const app = {
+  fmt(n){ return "$" + n.toFixed(2); },
+  findProduct(id){ return PRODUCTS.find(p => p.id === Number(id)); },
+  cartLine(pid,size){ return state.cart.find(c=>c.productId===Number(pid) && c.size===size); },
+
+  addToCart(pid, size, qty){
+    qty = qty || 1;
+    const existing = this.cartLine(pid,size);
+    if(existing){ existing.qty += qty; } else { state.cart.push({productId:Number(pid), size, qty}); }
+    this.renderCartBadge();
+    this.toast("Added to cart 🛍️");
+  },
+  removeFromCart(pid,size){
+    state.cart = state.cart.filter(c => !(c.productId===Number(pid) && c.size===size));
+    this.renderCartBadge(); this.render();
+  },
+  changeQty(pid,size,delta){
+    const line = this.cartLine(pid,size); if(!line) return;
+    line.qty += delta;
+    if(line.qty <= 0){ this.removeFromCart(pid,size); return; }
+    this.renderCartBadge(); this.render();
+  },
+  cartCount(){ return state.cart.reduce((s,c)=>s+c.qty,0); },
+  cartTotal(){ return state.cart.reduce((s,c)=>{ const p=this.findProduct(c.productId); return s+(p?p.price*c.qty:0); },0); },
+  renderCartBadge(){ document.getElementById('cartBadge').textContent = this.cartCount(); },
+
+  toast(msg){
+    const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+  },
+  subscribe(){
+    const el = document.getElementById('nlEmail');
+    const v = el.value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ this.toast("Enter a valid email to subscribe"); return; }
+    el.value = ""; this.toast("You're subscribed! 🎉");
+  },
+  toggleMobileNav(){
+    state.mobileOpen = !state.mobileOpen;
+    document.getElementById('mobileNav').classList.toggle('open', state.mobileOpen);
+  },
+
+  buildNav(){
+    const path = location.hash || "#/";
+    const items = [
+      {key:'home',label:'Home',href:'#/'},
+      {key:'baby',label:'Baby',href:'#/category/baby',mega:'baby'},
+      {key:'girls',label:'Girls',href:'#/category/girls',mega:'girls'},
+      {key:'boys',label:'Boys',href:'#/category/boys',mega:'boys'},
+      {key:'services',label:'Services',href:'#/services'},
+      {key:'blog',label:'Blog',href:'#/blog'},
+    ];
+    const isActive = (href) => href==='#/' ? (path==='#/'||path==='') : path.startsWith(href);
+
+    const desktop = items.map(it=>{
+      let megaHtml = "";
+      if(it.mega && MEGA[it.mega]){
+        const cols = Object.entries(MEGA[it.mega]).map(([title,links])=>`
+          <div class="mega-col"><h6>${title}</h6>${links.map(l=>`<a href="${it.href}">${l}</a>`).join("")}</div>`).join("");
+        megaHtml = `<div class="mega">${cols}</div>`;
+      }
+      return `<div class="nav-item ${isActive(it.href)?'active':''}"><a href="${it.href}">${it.label}</a>${megaHtml}</div>`;
+    }).join("");
+    document.getElementById('mainNav').innerHTML = desktop;
+
+    const mobile = items.map(it=>`<a href="${it.href}">${it.label}</a>`).join("");
+    document.getElementById('mobileNav').innerHTML = mobile;
+  },
+
+  productCard(p){
+    const priceHtml = p.oldPrice ? `<span>${this.fmt(p.price)}</span><span class="old">${this.fmt(p.oldPrice)}</span>` : `<span>${this.fmt(p.price)}</span>`;
+    return `
+      <div class="card">
+        <a href="#/product/${p.id}" class="card-img">
+          ${p.tag ? `<span class="badge">${p.tag}</span>` : ""}
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+        </a>
+        <div class="card-body">
+          <a href="#/product/${p.id}"><h4>${p.name}</h4></a>
+          <div class="price-row">${priceHtml}</div>
+          <button class="btn btn-primary btn-sm" onclick="app.quickAdd(${p.id})">Add to cart</button>
+        </div>
+      </div>`;
+  },
+  quickAdd(pid){ const p = this.findProduct(pid); this.addToCart(pid, p.sizes[0], 1); },
+
+  /* ---------------- PAGES ---------------- */
+  pageHome(){
+    const bestBaby = PRODUCTS.filter(p=>p.cats.includes('baby')).slice(0,4);
+    const newIn = PRODUCTS.filter(p=>p.tag==='New').concat(PRODUCTS.filter(p=>p.tag==='Sale')).slice(0,8);
+
+    return `
+      <div class="wrap">
+        <section class="hero">
+          <div>
+            <span class="eyebrow">Spring / 2026</span>
+            <h1>New limited <em>edition</em> collection is here</h1>
+            <p>GOTS-certified organic cotton, wash-tested to never shrink, pill, or fade. Made by a team that's 95% women and 80% moms.</p>
+            <a href="#/category/baby" class="btn btn-primary">Shop now</a>
+          </div>
+          <div class="hero-art"><img src="${PRODUCTS[3].img}" alt="Featured product"></div>
+        </section>
+
+        <section class="block">
+          <div class="section-head"><div><span class="eyebrow">de bebe</span><h2>Shop by category</h2></div></div>
+          <div class="cat-grid">
+            <a href="#/category/babyBoy" class="cat-tile"><img src="${PRODUCTS[0].img}" alt="Baby Boy"><span class="tag">Baby Boy (${PRODUCTS.filter(p=>p.cats.includes('babyBoy')).length})</span></a>
+            <a href="#/category/babyGirl" class="cat-tile"><img src="${PRODUCTS[2].img}" alt="Baby Girl"><span class="tag">Baby Girl (${PRODUCTS.filter(p=>p.cats.includes('babyGirl')).length})</span></a>
+            <a href="#/category/boys" class="cat-tile"><img src="${PRODUCTS[27].img}" alt="Boys"><span class="tag">Boys (${PRODUCTS.filter(p=>p.cats.includes('boys')).length})</span></a>
+            <a href="#/category/girls" class="cat-tile"><img src="${PRODUCTS[18].img}" alt="Girls"><span class="tag">Girls (${PRODUCTS.filter(p=>p.cats.includes('girls')).length})</span></a>
+          </div>
+        </section>
+
+        <section class="block">
+          <div class="section-head">
+            <div><span class="eyebrow">Our faves</span><h2>Best sellers</h2></div>
+            <a href="#/category/baby" class="btn btn-outline btn-sm">View all</a>
+          </div>
+          <div class="tabs" id="bsTabs">
+            <button class="tab-btn active" data-t="baby" onclick="app.switchBS('baby')">Baby</button>
+            <button class="tab-btn" data-t="girls" onclick="app.switchBS('girls')">Girls</button>
+            <button class="tab-btn" data-t="boys" onclick="app.switchBS('boys')">Boys</button>
+          </div>
+          <div class="prod-grid" id="bsGrid">${bestBaby.map(p=>this.productCard(p)).join("")}</div>
+        </section>
+
+        <section class="block">
+          <div class="section-head"><div><span class="eyebrow">Made with love</span><h2>Explore our collections</h2></div></div>
+          <div class="collections">
+            <a href="#/category/girls" class="collection-card"><img src="${PRODUCTS[22].img}" alt="Mix and Match Magic"><h3>Mix &amp; Match Magic</h3><span class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;">Shop now</span></a>
+            <a href="#/category/boys" class="collection-card"><img src="${PRODUCTS[27].img}" alt="Cute and Comfy"><h3>Cute &amp; Comfy</h3><span class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;">Shop now</span></a>
+          </div>
+        </section>
+
+        <section class="block">
+          <div class="section-head"><div><span class="eyebrow">Trending now</span><h2>New in</h2></div><a href="#/category/baby" class="btn btn-outline btn-sm">View all</a></div>
+          <div class="prod-grid">${newIn.map(p=>this.productCard(p)).join("")}</div>
+        </section>
+
+        <section class="block">
+          <a href="#/category/baby" class="banner-wide"><img src="${PRODUCTS[12].img}" alt="Better together collection"><div class="content"><h3>Better together collection</h3><span class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;">Shop collection</span></div></a>
+        </section>
+
+        <section class="block">
+          <div class="section-head"><div><span class="eyebrow">Why debebe</span><h2>A team of 95% women and 80% moms</h2></div></div>
+          <div class="features">
+            <div class="feature"><div class="fic">☁️</div><h4>Soft as a cloud</h4><p>The next best thing to snuggling skin-to-skin.</p></div>
+            <div class="feature"><div class="fic">🌱</div><h4>Earth friendly</h4><p>GOTS certified, organic cotton. None of the bad stuff.</p></div>
+            <div class="feature"><div class="fic">🧺</div><h4>Made for real life</h4><p>Wash-tested fabrics that never shrink, pill, or fade.</p></div>
+          </div>
+        </section>
+
+        <section class="block">
+          <a href="#/blog" class="banner-wide"><img src="${PRODUCTS[17].img}" alt="Bedtime stories from our blog"><div class="content"><h3>Bedtime stories from our blog</h3><span class="btn btn-outline btn-sm" style="border-color:#fff;color:#fff;">Explore more</span></div></a>
+        </section>
+
+        <section class="block">
+          <div class="organic">
+            <div>
+              <span class="eyebrow">Our story</span>
+              <h2 style="font-size:28px;">Why organic matters</h2>
+              <p>A baby's skin isn't just sensitive — it actually absorbs more of everything it touches. That's why we searched for GOTS-certified organic cotton in its purest form, free of all the yuck conventional cotton is produced with.</p>
+              <a href="#/services" class="btn btn-mint">Learn more</a>
+            </div>
+            <div class="art"><img src="${PRODUCTS[1].img}" alt="Organic cotton"></div>
+          </div>
+        </section>
+
+        <section class="shipstrip">
+          <div><b>Fast Shipping</b>We ship all orders within 2–5 business days</div>
+          <div><b>Free Shipping</b>For all orders over $100.00</div>
+        </section>
+      </div>`;
+  },
+
+  switchBS(tab){
+    document.querySelectorAll('#bsTabs .tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.t===tab));
+    const list = PRODUCTS.filter(p=>p.cats.includes(tab)).slice(0,4);
+    document.getElementById('bsGrid').innerHTML = list.map(p=>this.productCard(p)).join("");
+  },
+
+  pageCategory(cat){
+    const title = CAT_LABELS[cat] || "Shop";
+    const list = PRODUCTS.filter(p=>p.cats.includes(cat));
+    return `
+      <div class="wrap">
+        <div class="page-head">
+          <div class="breadcrumb"><a href="#/">Home</a> / ${title}</div>
+          <h1>${title}</h1>
+          <p>${list.length} products</p>
+        </div>
+        <div class="prod-grid" id="catGrid" style="margin:20px 0 70px;">
+          ${list.length ? list.map(p=>this.productCard(p)).join("") : `<p style="color:var(--ink-soft);grid-column:1/-1;">No products in this category yet — check back soon.</p>`}
+        </div>
+      </div>`;
+  },
+
+  pageProduct(id){
+    const p = this.findProduct(id);
+    if(!p){ return `<div class="wrap"><div class="empty-state"><div class="em">🔍</div><h2>Product not found</h2><a href="#/" class="btn btn-primary" style="margin-top:20px;">Back home</a></div></div>`; }
+    this._pdSize = p.sizes[0]; this._pdQty = 1;
+    const priceHtml = p.oldPrice ? `${this.fmt(p.price)} <span class="old" style="font-size:15px;">${this.fmt(p.oldPrice)}</span>` : this.fmt(p.price);
+    const crumbCat = p.cats[0];
+    return `
+      <div class="wrap">
+        <div class="product-detail">
+          <div class="pd-img"><img src="${p.img}" alt="${p.name}"></div>
+          <div class="pd-info">
+            <div class="breadcrumb"><a href="#/">Home</a> / <a href="#/category/${crumbCat}">${CAT_LABELS[crumbCat]}</a> / ${p.name}</div>
+            <h1>${p.name}</h1>
+            <div class="pd-price">${priceHtml}</div>
+            <p class="desc">${p.desc}</p>
+            <div><label style="font-weight:800;font-size:13px;">Size</label>
+              <div class="swatch-row" id="sizeRow">${p.sizes.map((s,i)=>`<button class="swatch ${i===0?'selected':''}" onclick="app.pickSize(this,'${s}')">${s}</button>`).join("")}</div>
+            </div>
+            <div class="qty-row"><label style="font-weight:800;font-size:13px;">Qty</label>
+              <div class="qty-box"><button onclick="app.pdQty(-1)">−</button><span id="pdQtyVal">1</span><button onclick="app.pdQty(1)">+</button></div>
+            </div>
+            <div class="pd-actions">
+              <button class="btn btn-primary" onclick="app.addFromDetail(${p.id})">Add to cart</button>
+              <a href="#/cart" class="btn btn-outline">Go to cart</a>
+            </div>
+            <div class="info-note">
+              <span>🚚 Free shipping on orders over $100.00</span>
+              <span>📦 Ships within 2–5 business days</span>
+              <span>🌱 GOTS-certified organic cotton</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  },
+  pickSize(btn, s){ document.querySelectorAll('#sizeRow .swatch').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); this._pdSize = s; },
+  pdQty(delta){ this._pdQty = Math.max(1, (this._pdQty||1) + delta); document.getElementById('pdQtyVal').textContent = this._pdQty; },
+  addFromDetail(pid){ this.addToCart(pid, this._pdSize, this._pdQty || 1); },
+
+  pageCart(){
+    if(state.cart.length === 0){
+      return `<div class="wrap"><div class="empty-state"><div class="em">🛍️</div><h2>Your cart is empty</h2>
+        <p style="color:var(--ink-soft);margin-top:8px;">Looks like you haven't added anything yet.</p>
+        <a href="#/category/baby" class="btn btn-primary" style="margin-top:22px;">Start shopping</a></div></div>`;
+    }
+    const rows = state.cart.map(c=>{
+      const p = this.findProduct(c.productId);
+      return `<div class="cart-item">
+          <div class="ci-img"><img src="${p.img}" alt="${p.name}"></div>
+          <div><a href="#/product/${p.id}"><h4>${p.name}</h4></a><div class="meta">Size: ${c.size}</div>
+            <div class="remove" onclick="app.removeFromCart(${p.id},'${c.size}')">Remove</div></div>
+          <div class="qty-box"><button onclick="app.changeQty(${p.id},'${c.size}',-1)">−</button><span>${c.qty}</span><button onclick="app.changeQty(${p.id},'${c.size}',1)">+</button></div>
+          <div style="font-weight:800;color:var(--rose-dark);">${this.fmt(p.price*c.qty)}</div>
+        </div>`;
+    }).join("");
+    const subtotal = this.cartTotal();
+    const shipping = subtotal >= 100 ? 0 : 6.95;
+    const total = subtotal + shipping;
+    return `<div class="wrap"><div class="page-head"><h1>Your cart</h1><p>${this.cartCount()} item(s)</p></div>
+      <div class="cart-layout"><div>${rows}</div>
+        <div class="summary-card"><h3 style="margin-bottom:16px;">Order summary</h3>
+          <div class="summary-row"><span>Subtotal</span><span>${this.fmt(subtotal)}</span></div>
+          <div class="summary-row"><span>Shipping</span><span>${shipping===0?'Free':this.fmt(shipping)}</span></div>
+          <div class="summary-row total"><span>Total</span><span>${this.fmt(total)}</span></div>
+          <a href="#/checkout" class="btn btn-primary" style="width:100%;margin-top:18px;">Proceed to checkout</a>
+          <a href="#/category/baby" class="btn btn-outline" style="width:100%;margin-top:10px;">Continue shopping</a>
+        </div></div></div>`;
+  },
+
+  pageCheckout(){
+    if(state.cart.length === 0){
+      return `<div class="wrap"><div class="empty-state"><div class="em">🧾</div><h2>Nothing to check out</h2><a href="#/category/baby" class="btn btn-primary" style="margin-top:20px;">Start shopping</a></div></div>`;
+    }
+    const subtotal = this.cartTotal();
+    const shipping = subtotal >= 100 ? 0 : 6.95;
+    const total = subtotal + shipping;
+    const items = state.cart.map(c=>{ const p=this.findProduct(c.productId); return `<div class="mini-item"><span>${p.name} (${c.size}) × ${c.qty}</span><span>${this.fmt(p.price*c.qty)}</span></div>`; }).join("");
+    return `<div class="wrap"><div class="page-head"><h1>Checkout</h1><p>Enter your shipping details to place your order.</p></div>
+      <div class="checkout-layout">
+        <div class="form-card"><h3>Shipping information</h3>
+          <form id="checkoutForm" onsubmit="return app.submitOrder(event)" novalidate>
+            <div class="form-row">
+              <div class="field" data-f="fullName"><label>Full name</label><input type="text" name="fullName" placeholder="Jane Doe"><div class="err-msg">Please enter your full name.</div></div>
+              <div class="field" data-f="email"><label>Email</label><input type="email" name="email" placeholder="jane@email.com"><div class="err-msg">Please enter a valid email.</div></div>
+            </div>
+            <div class="form-row full"><div class="field" data-f="address"><label>Street address</label><input type="text" name="address" placeholder="123 Sunshine Lane"><div class="err-msg">Please enter your address.</div></div></div>
+            <div class="form-row">
+              <div class="field" data-f="city"><label>City</label><input type="text" name="city" placeholder="Springfield"><div class="err-msg">Please enter your city.</div></div>
+              <div class="field" data-f="zip"><label>ZIP / Postal code</label><input type="text" name="zip" placeholder="12345"><div class="err-msg">Please enter a valid ZIP code.</div></div>
+            </div>
+            <div class="form-row">
+              <div class="field" data-f="phone"><label>Phone</label><input type="tel" name="phone" placeholder="(555) 123-4567"><div class="err-msg">Please enter your phone number.</div></div>
+              <div class="field" data-f="payment"><label>Payment method</label><select name="payment"><option value="cod">Cash on delivery</option><option value="card">Credit / Debit card</option></select></div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Place order · ${this.fmt(total)}</button>
+          </form>
+        </div>
+        <div class="summary-card"><h3 style="margin-bottom:10px;">Order summary</h3>${items}
+          <div class="summary-row"><span>Subtotal</span><span>${this.fmt(subtotal)}</span></div>
+          <div class="summary-row"><span>Shipping</span><span>${shipping===0?'Free':this.fmt(shipping)}</span></div>
+          <div class="summary-row total"><span>Total</span><span>${this.fmt(total)}</span></div>
+        </div>
+      </div></div>`;
+  },
+
+  submitOrder(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form).entries());
+    let valid = true;
+    const rules = {
+      fullName: v => v.trim().length > 1, email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      address: v => v.trim().length > 3, city: v => v.trim().length > 1,
+      zip: v => v.trim().length >= 3, phone: v => v.trim().length >= 7,
+    };
+    Object.keys(rules).forEach(key=>{
+      const fieldEl = form.querySelector(`[data-f="${key}"]`);
+      const ok = rules[key](data[key]||"");
+      fieldEl.classList.toggle('err', !ok);
+      if(!ok) valid = false;
+    });
+    if(!valid){ this.toast("Please fix the highlighted fields"); return false; }
+    this._lastOrder = {
+      id: 'DB' + Math.floor(100000 + Math.random()*899999),
+      name: data.fullName, total: this.cartTotal() + (this.cartTotal()>=100?0:6.95),
+      items: state.cart.map(c=>({...c})), payment: data.payment,
+    };
+    state.cart = []; this.renderCartBadge();
+    location.hash = "#/order-success";
+    return false;
+  },
+
+  pageOrderSuccess(){
+    const o = this._lastOrder;
+    if(!o){ location.hash = "#/"; return ""; }
+    return `<div class="wrap"><div class="success"><div class="ic">🎉</div><h1>Thank you, ${o.name.split(' ')[0]}!</h1>
+      <p style="color:var(--ink-soft);margin-top:10px;">Your order has been placed successfully. A confirmation has been sent to your email.</p>
+      <div class="order-box"><div class="row"><span>Order number</span><span style="font-weight:800;">${o.id}</span></div>
+      <div class="row"><span>Payment method</span><span>${o.payment==='cod'?'Cash on delivery':'Credit / Debit card'}</span></div>
+      <div class="row"><span>Total paid</span><span style="font-weight:800;color:var(--rose-dark);">${this.fmt(o.total)}</span></div></div>
+      <a href="#/category/baby" class="btn btn-primary">Continue shopping</a></div></div>`;
+  },
+
+  pageInfo(kind){
+    const pages = {
+      services: {title:"Our services", body:"From personal shopping help to size-exchange support, our team is here to make dressing your little one easy. Reach out any time and we'll get back to you within one business day."},
+      blog: {title:"Our blog", body:"Bedtime stories, parenting tips, and behind-the-scenes looks at how our organic cotton is made — new posts every week."},
+      contact: {title:"Contact us", body:"Have a question about an order, a product, or anything else? Send us a message below and we'll reply by email within 1–2 business days."},
+      faq: {title:"Frequently asked questions", body:"Shipping takes 2–5 business days. Orders over $100 ship free. Returns are accepted within 30 days of delivery in original condition. For anything else, our support team is happy to help."},
+      "size-charts": {title:"Size charts", body:"Baby sizes run Newborn through 24 months; kids sizes run 2Y through 14Y. Please measure your child's height and chest and compare against the chart before ordering — email us if you'd like a copy sent to you."},
+      "our-difference": {title:"Our difference", body:"Every debebe piece is wash-tested and GOTS-certified organic. We work with a small team of makers who share our values around fair labor and sustainable fabric sourcing."},
+      "look-books": {title:"Look books", body:"Browse our seasonal look books for outfit inspiration, styling tips, and a closer look at each collection."},
+      "find-a-retailer": {title:"Find a retailer", body:"Prefer to shop in person? Enter your zip code on our full site to find the debebe stockist closest to you. (This is a demo — no live store locator is connected.)"},
+      "track-order": {title:"Track your order", body:"Enter your order number below and we'll show you the latest status. (This is a demo — no live tracking data is connected.)"},
+      returns: {title:"Returns & cancellations", body:"We accept returns within 30 days of delivery for unworn, unwashed items with tags attached. Cancellations are free within 24 hours of placing an order."},
+      terms: {title:"Terms & conditions", body:"By using this site you agree to shop responsibly and treat our small, parent-run team kindly. This is placeholder text for a demo storefront."},
+      privacy: {title:"Privacy policy", body:"We only use your information to fulfill your order and keep you updated. We never sell your data. This is placeholder text for a demo storefront."},
+    };
+    const p = pages[kind] || pages.services;
+    let extra = "";
+    if(kind === 'contact'){
+      extra = `<div class="box"><form onsubmit="app.toast('Message sent — we will reply soon!'); this.reset(); return false;">
+        <div class="form-row"><div class="field"><label>Name</label><input required type="text" placeholder="Your name"></div>
+        <div class="field"><label>Email</label><input required type="email" placeholder="you@email.com"></div></div>
+        <div class="field" style="margin-bottom:16px;"><label>Message</label><input required type="text" placeholder="How can we help?"></div>
+        <button class="btn btn-primary" type="submit">Send message</button></form></div>`;
+    }
+    if(kind === 'track-order'){
+      extra = `<div class="box"><form onsubmit="app.toast('Order DB482913 — out for delivery 🚚'); return false;">
+        <div class="field" style="margin-bottom:16px;"><label>Order number</label><input required type="text" placeholder="e.g. DB482913"></div>
+        <button class="btn btn-primary" type="submit">Track order</button></form></div>`;
+    }
+    return `<div class="wrap"><div class="info-page"><h1>${p.title}</h1><p>${p.body}</p>${extra}</div></div>`;
+  },
+
+  /* ---------------- ROUTER ---------------- */
+  render(){
+    const hash = location.hash || "#/";
+    const parts = hash.replace(/^#\//,'').split('/').filter(Boolean);
+    let html = "";
+    if(parts.length === 0){ html = this.pageHome(); }
+    else if(parts[0] === 'category'){ html = this.pageCategory(parts[1] || 'baby'); }
+    else if(parts[0] === 'product'){ html = this.pageProduct(parts[1]); }
+    else if(parts[0] === 'cart'){ html = this.pageCart(); }
+    else if(parts[0] === 'checkout'){ html = this.pageCheckout(); }
+    else if(parts[0] === 'order-success'){ html = this.pageOrderSuccess(); }
+    else if(['services','blog','contact','faq','size-charts','track-order','returns','terms','privacy','our-difference','look-books','find-a-retailer'].includes(parts[0])){ html = this.pageInfo(parts[0]); }
+    else { html = this.pageHome(); }
+    document.getElementById('app').innerHTML = html;
+    this.buildNav();
+    state.mobileOpen = false;
+    document.getElementById('mobileNav').classList.remove('open');
+    window.scrollTo({top:0});
+  },
+
+  init(){ this.renderCartBadge(); window.addEventListener('hashchange', ()=> this.render()); this.render(); }
+};
+app.init();
+</script>
+</body>
+</html>
